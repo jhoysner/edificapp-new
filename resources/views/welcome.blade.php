@@ -343,7 +343,7 @@
               </div>
               <div class="modal-body">
                     <div>
-                        <a href="/auth_facebook" id="btn-facebook" class="btn btn-lg btn-block" role="button"><i class="fa fa-facebook-official" aria-hidden="true"></i>Loguearse con Facebook</a>
+                        <a href="{{url('auth/facebook')}}" id="btn-facebook" class="btn btn-lg btn-block" role="button"><i class="fa fa-facebook-official" aria-hidden="true"></i>Loguearse con Facebook</a>
                     </div>
 
                     <div>
