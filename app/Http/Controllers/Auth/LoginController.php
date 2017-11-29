@@ -7,6 +7,9 @@ use App\User;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Illuminate\Support\Facades\Auth;
 use Laravel\Socialite\Facades\Socialite;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Session;
+
 
 class LoginController extends Controller
 {
@@ -42,9 +45,9 @@ class LoginController extends Controller
         $this->middleware('guest')->except('logout');
     }
 
-     public function redirectToProvider()
+     public function redirectToProvider($provider)
     {
-        return Socialite::driver('facebook')->redirect();
+        return Socialite::driver($provider)->redirect();
     }
 
     /**
@@ -52,10 +55,11 @@ class LoginController extends Controller
      *
      * @return Response
      */
-    public function handleProviderCallback()
+    public function handleProviderCallback($provider)
     {
-        $user = Socialite::driver('facebook')->user();
-        $authUser = $this->findOrCreateUser($user, true);
+        $user = Socialite::driver($provider)->user();
+
+        $authUser = $this->findOrCreateUser($user, $provider);
 
         Auth::login($authUser, true);
 
@@ -64,7 +68,7 @@ class LoginController extends Controller
     }
 
 
-    public function findOrCreateUser($user)
+    public function findOrCreateUser($user, $provider)
     {
         $authUser = User::where('email', $user->email)->first();
 
@@ -76,8 +80,34 @@ class LoginController extends Controller
             'name'     => $user->name,
             'email'    => $user->email,
             'avatar'   => $user->avatar,
+            'provider'   => $provider,
             'token'     => $user->token
         ]);
+    }
+
+    public function login(Request $request)
+    {
+        $this->validateLogin($request);
+
+        // If the class is using the ThrottlesLogins trait, we can automatically throttle
+        // the login attempts for this application. We'll key this by the username and
+        // the IP address of the client making these requests into this application.
+        if ($this->hasTooManyLoginAttempts($request)) {
+            $this->fireLockoutEvent($request);
+
+            return $this->sendLockoutResponse($request);
+        }
+
+        if ($this->attemptLogin($request)) {
+            return $this->sendLoginResponse($request);
+        }
+
+        // If the login attempt was unsuccessful we will increment the number of attempts
+        // to login and redirect the user back to the login form. Of course, when this
+        // user surpasses their maximum number of attempts they will get locked out.
+        Session::flash('message-error','Usuario o Clave incorrecta');
+        return redirect()->route('welcome');
+
     }
 
 }

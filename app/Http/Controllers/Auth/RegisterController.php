@@ -2,10 +2,14 @@
 
 namespace App\Http\Controllers\Auth;
 
-use App\User;
 use App\Http\Controllers\Controller;
-use Illuminate\Support\Facades\Validator;
+use App\User;
+use Illuminate\Auth\Events\Registered;
 use Illuminate\Foundation\Auth\RegistersUsers;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Facades\Validator;
+
 
 class RegisterController extends Controller
 {
@@ -45,28 +49,50 @@ class RegisterController extends Controller
      * @param  array  $data
      * @return \Illuminate\Contracts\Validation\Validator
      */
-    protected function validator(array $data)
+    // protected function validator(array $data)
+    // {
+    //     return Validator::make($data, [
+    //         // 'name' => 'required|string|max:255',
+    //         'email' => 'required|string|email|max:255|unique:users',
+    //         'password' => 'required|string|min:6|confirmed',
+    //     ]);
+
+
+    // }
+
+
+    public function register(Request $request)
     {
-        return Validator::make($data, [
+        $validator = Validator::make($request->all(), [
             // 'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users',
             'password' => 'required|string|min:6|confirmed',
         ]);
+
+
+        if ($validator->fails()) {
+
+            $authUser = User::where('email', $request->email)->first();
+            Session::flash('message-error','Ya se encuentra este correo registrado usando '. $authUser->provider);
+            return redirect()->route('welcome');
+        }
+
+
+        event(new Registered($user = $this->create($request->all())));
+
+        $this->guard()->login($user);
+
+        return $this->registered($request, $user)
+                        ?: redirect($this->redirectPath());
     }
 
-    /**
-     * Create a new user instance after a valid registration.
-     *
-     * @param  array  $data
-     * @return \App\User
-     */
     protected function create(array $data)
     {
-
         return User::create([
             // 'name' => $data['name'],
             'email' => $data['email'],
             'password' => bcrypt($data['password']),
+            'provider' => 'auth',
         ]);
     }
 }

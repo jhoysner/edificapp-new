@@ -51,12 +51,10 @@
                             <li>
                                 <i class="fa fa-user-secret fa-2x fa-border" aria-hidden="true"></i>
                                 <p>Ingresar <br><small><a href="" data-toggle="modal" data-target="#login">Login</a></small></p>
-
                             </li>
                         </ul>
                     </div>
                 </div> <!--container bar-sup-->
-
                 <nav class="navbar" role="navigation" id="navbar" data-spy="affix" data-offset-top="100">
                     <div class="container-fluid navegacion">
                         <div class="container">
@@ -280,11 +278,11 @@
               </div>
               <div class="modal-body">
                     <div>
-                        <a href="/auth_facebook" id="btn-facebook" class="btn btn-lg btn-block" role="button"><i class="fa fa-facebook-official" aria-hidden="true"></i>Registrarse con Facebook</a>
+                        <a href="{{url('auth/facebook')}}" id="btn-facebook" class="btn btn-lg btn-block" role="button"><i class="fa fa-facebook-official" aria-hidden="true"></i>Registrarse con Facebook</a>
                     </div>
 
                     <div>
-                        <a href="auth_google" id="btn-google" class="btn btn-lg btn-block" role="button"><i class="fa fa-google-plus" aria-hidden="true"></i>Registrarse con Google</a>
+                        <a href="{{url('auth/google')}}" id="btn-google" class="btn btn-lg btn-block" role="button"><i class="fa fa-google-plus" aria-hidden="true"></i>Registrarse con Google</a>
                     </div>
 
                     <legend>
@@ -347,7 +345,7 @@
                     </div>
 
                     <div>
-                        <a href="auth_google" id="btn-google" class="btn btn-lg btn-block" role="button"><i class="fa fa-google-plus" aria-hidden="true"></i>Loguearse con Google</a>
+                        <a href="{{url('auth/google')}}" id="btn-google" class="btn btn-lg btn-block" role="button"><i class="fa fa-google-plus" aria-hidden="true"></i>Loguearse con Google</a>
                     </div>
                     <legend>
                         Loguearse
